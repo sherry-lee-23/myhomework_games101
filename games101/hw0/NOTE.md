@@ -1,4 +1,4 @@
-### homework0
+# homework0
 点的旋转平移在齐次坐标下的旋转和平移：
 ```cpp
 #define _USE_MATH_DEFINES
