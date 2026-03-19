@@ -61,10 +61,10 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
 }
 ```
 参数：  
-eye_fov 张角大小_
-aspect  宽高比  
-znear   近平面  
-zfar    远平面    
+eye_fov    张角大小_  
+aspect_ratio_   宽高比  
+znear    近平面  
+zfar     远平面    
 
 步骤：
 1.构造m矩阵，进行透视变换，将近平面映射到z=-znear的平面上
