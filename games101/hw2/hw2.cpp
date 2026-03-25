@@ -34,9 +34,9 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
     Eigen::Matrix4f projection = Eigen::Matrix4f::Zero();
 
     Eigen::Matrix4f m;
-    m << -zNear, 0, 0, 0,
-        0, -zNear, 0, 0,
-        0, 0, -(zNear + zFar), zNear * -zFar,
+    m << zNear, 0, 0, 0,
+        0, zNear, 0, 0,
+        0, 0, (zNear + zFar), -zNear * zFar,
         0, 0, -1, 0;
 
     float half = (eye_fov / 2.0) * MY_PI / 180.0;
