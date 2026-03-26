@@ -1,6 +1,6 @@
 # homework2
 
-##1.透视投影矩阵
+## 1.透视投影矩阵
 ```cpp
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
 {
