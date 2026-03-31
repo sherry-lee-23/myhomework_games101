@@ -118,3 +118,61 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
 注：
 1. 判断像素中心是否在三角形内部时，使用(x + 0.5, y + 0.5)来表示像素中心的坐标
 2. 深度插值时，需要考虑齐次坐标的影响，因此需要先计算重心坐标的倒数，然后再进行插值
+
+
+# Triangle and Rasterizer
+## Triangle
+
+### 1. Triangle Class
+1. v[3]: 三角形的三个顶点坐标
+2. color[3]: 三角形三个顶点的颜色
+3. normal[3]: 三角形三个顶点的法线向量
+4. tex_coords[3]: 三角形三个顶点的纹理坐标
+
+### 2.方法
+1. setVertex(int ind,Vector3f ver) : 设置三角形第ind个顶点的坐标
+2. setNormal(int ind,Vector3f n) : 设置三角形第ind个顶点的法线向量
+3. setColor(int ind,Vector3f c) : 设置三角形第ind个顶点的颜色
+4. getColor() : 获取三角形的颜色（取第一个顶点的颜色）
+5. setTexCoord(int ind, Vector2f tex) : 设置三角形第ind个顶点的纹理坐标
+6. toVector4() : 将三角形的顶点坐标转换为齐次坐标（Vector4f）
+
+## Rasterizer
+### 1. namespace rst
+1. enum class Buffers { Color = 1, Depth = 2 }; : 定义缓冲区类型，颜色缓冲区和深度缓冲区
+2. inline Buffers operator|(Buffers a, Buffers b) : 定义位运算符，用于组合缓冲区类型
+3. inline Buffers operator&(Buffers a, Buffers b) : 定义位运算符，用于判断缓冲区类型
+4. enum class Primitive { Line, Triangle }; : 定义图元类型，线段和三角形
+5. struct pos_buf_id, ind_buf_id, col_buf_id : 定义位置缓冲区ID、索引缓冲区ID和颜色缓冲区ID的结构体 
+6. class rasterizer : 定义光栅化器类
+   - width, height: 光栅化器的宽度和高度
+   - frame_buf: 颜色缓冲区，存储每个像素的颜色值
+   - depth_buf: 深度缓冲区，存储每个像素的深度值
+   - set_pixel(const Vector3f& point, const Eigen::Vector3f& color) : 设置像素点的颜色
+   - clear(Buffers buff) : 清除指定类型的缓冲区
+   - get_index(int x, int y) : 获取像素点在缓冲区中的索引
+   - rasterize_triangle(const Triangle& t) : 光栅化三角形的方法，包含边界框计算、像素遍历、深度测试和颜色插值等步骤
+
+### class rasterizer
+1. model, view, projection: 模型矩阵、视图矩阵和投影矩阵
+2. map: pos_buf, ind_buf, col_buf: 存储位置缓冲区、索引缓冲区和颜色缓冲区的映射
+3. frame_buf: 颜色缓冲区，存储每个像素的颜色值
+4. depth_buf: 深度缓冲区，存储每个像素的深度值
+5. width, height: 光栅化器的宽度和高度
+6. next_id: 下一个缓冲区ID，用于分配新的缓冲区ID
+7. frame_buf_ssaa: 超采样抗锯齿的颜色缓冲区
+8. depth_buf_ssaa: 超采样抗锯齿的深度缓冲区
+9. ssaa_w,ssaa_h: 超采样抗锯齿的宽度和高度
+10. pixel_size_sm: 超采样抗锯齿的像素大小
+11. start_point: 超采样抗锯齿的起始点坐标
+
+### 方法
+1. rasterizer(int w, int h) : 构造函数，初始化光栅化器的宽度和高度，并分配颜色缓冲区和深度缓冲区
+2. loader：加载位置缓冲区、索引缓冲区和颜色缓冲区的方法，返回对应的缓冲区ID
+3. setter：设置模型矩阵、视图矩阵和投影矩阵的方法
+4. set_pixel(const Vector3f& point, const Eigen::Vector3f& color) : 设置像素点的颜色
+5. clear(Buffers buff) : 清除指定类型的缓冲区
+6. draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, col_buf_id col_buffer, Primitive type) : 绘制图元的方法，根据图元类型调用相应的绘制函数
+7. getter: index, index_ssaa, next_id 得到index和下一个缓冲区ID的方法
+8. rasterize_triangle(const Triangle& t) : 光栅化三角形的方法，包含边界框计算、像素遍历、深度测试和颜色插值等步骤
+9. draw_line(Vector3f begin, Vector3f end) : 绘制线段的方法，使用Bresenham算法实现
